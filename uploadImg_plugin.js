@@ -10,7 +10,7 @@
 function uploadImg($parent, imgLength, sourceType, hasUploadImgLocalId, hasUploadImgServerId) {
   var _this = this
   // 按钮元素
-  this.$upload_list_item = $('<div class="imgContainerLi" style="z-index: 9;width: 30%;height: 4rem;margin-left:2%;margin-top: .5rem;float: left;border: 1px solid #dedede;border-radius: .1rem;position:relative;"><img src="" class="showImg" style="display: none;width: 100%;height: 100%;position: absolute;left: 0;top: 0;"><img src="/html/images/project__add.png" alt="" class="addImg" style="width: 2rem;height: 2rem;position:absolute;left: 50%;margin-left: -1rem;margin-top: 1rem;"><span class="delete" style="display: none;width: 1rem;height: 1rem;line-height: 1rem;position: absolute;right: -.4rem;top: -.4rem;z-index: 99;border: 1px solid #dedede;border-radius: 50%;text-align: center;background: red;color: #fff;">x</span></div>')
+  _this.$upload_list_item = $('<div class="imgContainerLi" style="z-index: 9;width: 30%;height: 4rem;margin-left:2%;margin-top: .5rem;float: left;border: 1px solid #dedede;border-radius: .1rem;position:relative;"><img src="" class="showImg" style="display: none;width: 100%;height: 100%;position: absolute;left: 0;top: 0;"><img src="/html/images/project__add.png" alt="" class="addImg" style="width: 2rem;height: 2rem;position:absolute;left: 50%;margin-left: -1rem;margin-top: 1rem;"><span class="delete" style="display: none;width: 1rem;height: 1rem;line-height: 1rem;position: absolute;right: -.4rem;top: -.4rem;z-index: 99;border: 1px solid #dedede;border-radius: 50%;text-align: center;background: red;color: #fff;">x</span></div>')
   _this.sourceType = sourceType || ['camera', 'album'] // 选择相片的方式 默认相册 + 拍照
   _this.$parent = $parent // 初始化父元素 
   _this.uploadIndex = 0 //  上传索引值
