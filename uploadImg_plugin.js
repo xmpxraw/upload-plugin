@@ -10,7 +10,7 @@
 function uploadImg($parent, imgLength, sourceType, hasUploadImgLocalId, hasUploadImgServerId) {
   var _this = this
   // 按钮元素
-  _this.$upload_list_item = $('<div class="imgContainerLi" style="z-index: 9;width: 30%;height: 4rem;margin-left:2%;margin-top: .5rem;float: left;border: 1px solid #dedede;border-radius: .1rem;position:relative;"><img src="" class="showImg" style="display: none;width: 100%;height: 100%;position: absolute;left: 0;top: 0;"><img src="/html/images/project__add.png" alt="" class="addImg" style="width: 2rem;height: 2rem;position:absolute;left: 50%;margin-left: -1rem;margin-top: 1rem;"><span class="delete" style="display: none;width: 1rem;height: 1rem;line-height: 1rem;position: absolute;right: -.4rem;top: -.4rem;z-index: 99;border: 1px solid #dedede;border-radius: 50%;text-align: center;background: red;color: #fff;">x</span></div>')
+  this.$upload_list_item = $('<div class="imgContainerLi" style="z-index: 9;width: 30%;height: 4rem;margin-left:2%;margin-top: .5rem;float: left;border: 1px solid #dedede;border-radius: .1rem;position:relative;"><img src="" class="showImg" style="display: none;width: 100%;height: 100%;position: absolute;left: 0;top: 0;"><img src="/static/html/images/project__add.png" alt="" class="addImg" style="width: 2rem;height: 2rem;position:absolute;left: 50%;margin-left: -1rem;margin-top: 1rem;"><span class="delete" style="display: none;width: 1rem;height: 1rem;line-height: 1rem;position: absolute;right: -.4rem;top: -.4rem;z-index: 99;border: 1px solid #dedede;border-radius: 50%;text-align: center;background: red;color: #fff;">x</span></div>')
   _this.sourceType = sourceType || ['camera', 'album'] // 选择相片的方式 默认相册 + 拍照
   _this.$parent = $parent // 初始化父元素 
   _this.uploadIndex = 0 //  上传索引值
@@ -19,8 +19,9 @@ function uploadImg($parent, imgLength, sourceType, hasUploadImgLocalId, hasUploa
   _this.localIds = null //存储 刻多瓦 返回的本地id
   _this.parentEle = null //放 img list 的父级元素
   _this.serverIdArr = [] //存储 serverid 的数组
-  _this.hasUploadImgLocalId = hasUploadImgLocalId || [] // 旧有的图片 localid 
-  _this.hasUploadImgServerId = hasUploadImgServerId || [] // 旧有的图片 hasUploadImgServerId 
+  _this.saveOldserverIdArr = [] // 临时存储已上传图片的数组
+  _this.hasUploadImgLocalId = hasUploadImgLocalId || [] // 旧有的图片 localid
+  _this.hasUploadImgServerId = hasUploadImgServerId || [] // 旧有的图片 hasUploadImgServerId
   $parent.append(_this.$upload_list_item)
   _this.addEvt() // 初始化事件
 }
@@ -45,7 +46,7 @@ uploadImg.prototype.initHasUploadImg = function () {
     return
   }
   if (_this.hasUploadImgLocalId.length > _this.imgLength) {
-    console.log("请注意=======》_this.hasUploadImgLocalId 长度 > 参数中可上传长度")
+    alert("请注意=======》_this.hasUploadImgLocalId 长度 > 参数中可上传长度")
     return
   }
   if (_this.hasUploadImgServerId.length === 0) {
@@ -53,12 +54,12 @@ uploadImg.prototype.initHasUploadImg = function () {
     return
   }
   if (_this.hasUploadImgServerId.length > _this.imgLength) {
-    console.log("请注意=======》_this.hasUploadImgServerId 长度 > 参数中可上传长度")
+    alert("请注意=======》_this.hasUploadImgServerId 长度 > 参数中可上传长度")
     return
   }
   console.log(_this.$parent.find('.imgContainerLi'))
   for (var i in _this.hasUploadImgLocalId) {
-    domStr += '<div class="imgContainerLi" style="z-index: 9;width: 30%;height: 4rem;margin-left:2%;margin-top: .5rem;float: left;border: 1px solid #dedede;border-radius: .1rem;position:relative;"><img src="' + _this.hasUploadImgLocalId[i] + '" class="showImg" style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;"><img src="/html/images/project__add.png" alt="" class="addImg" style="width: 2rem;height: 2rem;position: absolute;left: 50%;margin-left: -1rem;margin-top: 1rem;display: none;"><span class="delete" style="width: 1rem;height: 1rem;line-height: 1rem;position: absolute;right: -.4rem;top: -.4rem;z-index: 99;border: 1px solid #dedede;border-radius: 50%;text-align: center;background: red;color: #fff;">x</span></div>'
+    domStr += '<div class="imgContainerLi" style="z-index: 9;width: 30%;height: 4rem;margin-left:2%;margin-top: .5rem;float: left;border: 1px solid #dedede;border-radius: .1rem;position:relative;"><img src="http://account.onemorething.net.cn:8080/huawei/DEV_18001/' + _this.hasUploadImgLocalId[i] + '" class="showImg" style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;"><img src="/static/html/images/project__add.png" alt="" class="addImg" style="width: 2rem;height: 2rem;position: absolute;left: 50%;margin-left: -1rem;margin-top: 1rem;display: none;"><span class="delete" style="width: 1rem;height: 1rem;line-height: 1rem;position: absolute;right: -.4rem;top: -.4rem;z-index: 99;border: 1px solid #dedede;border-radius: 50%;text-align: center;background: red;color: #fff;">x</span></div>'
   }
   for (var i in _this.hasUploadImgServerId) {
     _this.serverIdArr.push(_this.hasUploadImgServerId[i])
@@ -86,6 +87,7 @@ uploadImg.prototype.chooseImage = function (e) {
       } else {
         _this.localIds = localIds
       }
+      _this.saveOldserverIdArr = []
       _this.uploadImage()
       _this.parentEle = $target.parent()
     },
@@ -99,7 +101,7 @@ uploadImg.prototype.setListImgSrc = function (localIdsData) {
   var domStr = '',
     _this = this
   for (var i in localIdsData) {
-    domStr += '<div class="imgContainerLi" style="z-index: 9;width: 30%;height: 4rem;margin-left:2%;margin-top: .5rem;float: left;border: 1px solid #dedede;border-radius: .1rem;position:relative;"><img src="' + localIdsData[i] + '" class="showImg" style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;"><img src="/html/images/project__add.png" alt="" class="addImg" style="width: 2rem;height: 2rem;position: absolute;left: 50%;margin-left: -1rem;margin-top: 1rem;display: none;"><span class="delete" style="width: 1rem;height: 1rem;line-height: 1rem;position: absolute;right: -.4rem;top: -.4rem;z-index: 99;border: 1px solid #dedede;border-radius: 50%;text-align: center;background: red;color: #fff;">x</span></div>'
+    domStr += '<div class="imgContainerLi" style="z-index: 9;width: 30%;height: 4rem;margin-left:2%;margin-top: .5rem;float: left;border: 1px solid #dedede;border-radius: .1rem;position:relative;"><img src="http://cdn.onemorething.net.cn/' + localIdsData[i] + '?imageView2/1/w/240" class="showImg" style="width: 100%;height: 100%;position: absolute;left: 0;top: 0;"><img src="/static/html/images/project__add.png" alt="" class="addImg" style="width: 2rem;height: 2rem;position: absolute;left: 50%;margin-left: -1rem;margin-top: 1rem;display: none;"><span class="delete" style="width: 1rem;height: 1rem;line-height: 1rem;position: absolute;right: -.4rem;top: -.4rem;z-index: 99;border: 1px solid #dedede;border-radius: 50%;text-align: center;background: red;color: #fff;">x</span></div>'
   }
   _this.parentEle.before(domStr)
   _this.isHideUploadItem()
@@ -115,10 +117,11 @@ uploadImg.prototype.uploadImage = function () {
       var serverId = res.serverId // 返回图片的服务器端ID
       console.log(serverId, '==========serverId')
       _this.serverIdArr.push(res.serverId)
+      _this.saveOldserverIdArr.push(res.serverId)
       // 当前索引 index
       currentIndex = Number(_this.uploadIndex) + 1
       if (currentIndex === _this.localIds.length) {
-        _this.setListImgSrc(_this.localIds)
+        _this.setListImgSrc(_this.saveOldserverIdArr)
         _this.uploadIndex = 0
       } else {
         _this.uploadIndex++
@@ -135,13 +138,13 @@ uploadImg.prototype.deleteImage = function (e) {
     var _this = this,
       $target = $(e.currentTarget),
       targetType = $target.parent().attr('data-type'),
-      $deleteIndex = Number($target.parent().index()) - 1
+      $deleteIndex = Number($target.parent().index())
     $target.parent().remove()
     _this.serverIdArr.splice($deleteIndex, 1)
     _this.isHideUploadItem()
+    console.log(_this.serverIdArr, '执行删除后的_this.serverIdArr===========')
     return _this.serverIdArr
   }
-  console.log(_this.serverIdArr, '=========>this.serverIdArr')
 }
 // 判断是否超出 length
 uploadImg.prototype.isHideUploadItem = function (e) {
